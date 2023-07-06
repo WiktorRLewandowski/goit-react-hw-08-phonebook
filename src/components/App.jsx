@@ -40,7 +40,7 @@ class App extends Component {
   
   componentDidMount() {
     const localStorageItems = JSON.parse(localStorage.getItem('contacts'))
-    if (!localStorageItems && !localStorageItems[0]) return this.setState({...INITIAL_STATE, ...INITIAL_CONTACTS})
+    if (!localStorageItems || !localStorageItems[0]) return this.setState({...INITIAL_STATE, ...INITIAL_CONTACTS})
     this.setState({contacts: localStorageItems})
   }
 
