@@ -1,11 +1,11 @@
 import css from './ContactsForm.module.css'
 import PropTypes from 'prop-types'
 
-export const ContactForm = ({onSubmit, onChange, name, number}) => {
+export const ContactForm = ({onSubmit, onNameChange, onNumberChange, name, number}) => {
     return (
       <form onSubmit={onSubmit} className={css.form}>
           <label className={css.label}>Name:
-            <input onChange={onChange}
+            <input onChange={onNameChange}
               type="text"
               name="name"
               className={css.input}
@@ -16,7 +16,7 @@ export const ContactForm = ({onSubmit, onChange, name, number}) => {
             />
           </label>
           <label className={css.label}>Number:
-            <input onChange={onChange}
+            <input onChange={onNumberChange}
               type="tel"
               name="number"
               className={css.input}

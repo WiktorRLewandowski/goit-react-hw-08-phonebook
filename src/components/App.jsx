@@ -1,126 +1,96 @@
-import { Component } from "react";
+import { useState } from "react";
 import { ContactList } from "./ContactList";
 import { ContactForm } from "./ContactsForm";
 import { Filter } from "./Filter";
 import Notiflix from "notiflix";
 import PropTypes from 'prop-types'
 
-const INITIAL_STATE = {
-  name: '',
-  number: '',
-  filter: '',
-}
-
-const INITIAL_CONTACTS = {
-  contacts: [
+const INITIAL_CONTACTS = [
     {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
     {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
     {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
     {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
-  ],
-}
+]
 
-class App extends Component {
-  state = {
-    contacts: [
-      {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
-      {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
-      {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
-      {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
-    ],
-    ...INITIAL_STATE
-  }
+const localStorageItems = JSON.parse(localStorage.getItem('contacts'))
+const storageOrInitial = () => !localStorageItems || !localStorageItems[0] ? [...INITIAL_CONTACTS] : localStorageItems
 
-  static propTypes = {
-    user: PropTypes.arrayOf(PropTypes.string),
-    name: PropTypes.string,
-    number: PropTypes.string,
-    filter: PropTypes.string
-  }
-  
-  componentDidMount() {
-    const localStorageItems = JSON.parse(localStorage.getItem('contacts'))
-    if (!localStorageItems || !localStorageItems[0]) return this.setState({...INITIAL_STATE, ...INITIAL_CONTACTS})
-    this.setState({contacts: localStorageItems})
-  }
+export default function App() {
+  const [contacts, setContacts] = useState(()=> storageOrInitial())
+  const [name, setName] = useState('')
+  const [number, setNumber] = useState('')
+  const [filter, setFilter] = useState('')
 
-  componentDidUpdate() {
-    this.localStorageSaver()
-  } // i feel like this should be in ContactList, but maybe we can get it with hooks later on
-
-  localStorageSaver() {
-    const {contacts} = this.state
+  function localStorageSaver() {
     localStorage.setItem("contacts", JSON.stringify(contacts));
   }
+  localStorageSaver()
 
-  handleSubmit = (ev) => {
+  const handleSubmit = (ev) => {
     ev.preventDefault();
-    const { contacts } = this.state
-    const form = ev.currentTarget;
-    const name = form.elements.name.value;
-    const number = form.elements.number.value;
     if (contacts.some((contact)=> contact.name.toLowerCase() === name.toLowerCase())) {
       return Notiflix.Notify.failure(`${name} is already in the books!`)
     }
-    // console.log(name, number)
-    // this.setState(({contacts}) => {
-    //   return (
-    //     contacts.push({id:crypto.randomUUID(), name:name, number:number})        
-    //   )
-    // });
 
-
-    this.setState((prevState) => ({
-      contacts: [
-        ...prevState.contacts,
-        {
-          id:crypto.randomUUID(),
-          name:name,
-          number: number,
-        }
-      ]
-    })
-    )
-    this.reset()
-  }
-
-  reset = () => {this.setState(prevState => ({
-    ...prevState.contacts, ...INITIAL_STATE
-  }))}
-
-  handleChange = (ev) => {
-    const {value, name} = ev.target
-    this.setState({[name]: value})
-  }
-
-  handleDelete = (ev) => {
-    const { contacts } = this.state
-    const contactToDelete = contacts.filter(contact=> contact.id === ev.target.id)
-    this.setState(contacts.splice(contacts.indexOf(contactToDelete[0]), 1))
-  }
-
-  render() {
-    const { contacts, name, number, filter } = this.state
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column',
-          fontSize: '2rem',
-          color: '#010101'
-        }}
-      >
-        <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.handleSubmit} onChange={this.handleChange} name={name} number={number}/>
-        <h2>Contacts</h2>
-        <Filter filter={filter} onChange={this.handleChange}/>
-        <ContactList contacts={contacts} filter={filter} handleDelete={this.handleDelete}/>
-      </div>
+    setContacts((prevState)=> (
+    [
+            ...prevState,
+            {
+              id: crypto.randomUUID(),
+              name: name,
+              number: number,
+            }
+          ]          
       )
-    }
+    )
+    setName('')
+    setNumber('')
+  }
+
+
+  const handleFilterChange = e => {
+    setFilter(e.target.value)
+  }
+
+  const handleNameChange = e => {
+    setName(e.target.value)
+  }
+
+  const handleNumberChange = e => {
+    setNumber(e.target.value)
+  }
+
+  const handleDelete = (ev) => {
+    setContacts((prevState)=> ([
+      ...prevState.filter(prev => prev.id !== ev.target.id)
+    ]
+
+    ))
+  }
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        fontSize: '2rem',
+        color: '#010101'
+      }}
+    >
+      <h1>Phonebook</h1>
+      <ContactForm onSubmit={handleSubmit} onNameChange={handleNameChange} onNumberChange={handleNumberChange} name={name} number={number}/>
+      <h2>Contacts</h2>
+      <Filter filter={filter} onChange={handleFilterChange}/>
+      <ContactList contacts={contacts} filter={filter} handleDelete={handleDelete}/>
+    </div>
+    )
 }
 
-
-export default App
+App.propTypes = {
+  user: PropTypes.arrayOf(PropTypes.string),
+  name: PropTypes.string,
+  number: PropTypes.string,
+  filter: PropTypes.string
+}
