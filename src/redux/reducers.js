@@ -18,11 +18,6 @@ const INITIAL_CONTACTS = {
     filter: "",
 }
 
-
-
-// const localStorageItems = JSON.parse(localStorage.getItem('contacts'))
-// const storageOrInitial = !localStorageItems || !localStorageItems[0] ? [INITIAL_CONTACTS] : localStorageItems
-
 export const rootReducer = createReducer(INITIAL_CONTACTS, {
     [addContact]: (state, action) => {
        state.contacts.push(action.payload)
