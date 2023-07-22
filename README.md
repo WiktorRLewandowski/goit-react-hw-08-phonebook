@@ -1,1 +1,1 @@
-## https://wiktorrlewandowski.github.io/goit-react-hw-04-phonebook/
+## https://wiktorrlewandowski.github.io/goit-react-hw-06-phonebook/
