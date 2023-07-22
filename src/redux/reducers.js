@@ -13,7 +13,7 @@ const storageOrInitial = !storageContacts || !storageContacts[0] ? [...TEST_CONT
 
 const INITIAL_CONTACTS = {
     contacts: [
-        ...storageOrInitial || TEST_CONTACTS        
+        ...storageOrInitial     
     ],
     filter: "",
 }
