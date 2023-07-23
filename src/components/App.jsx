@@ -1,16 +1,27 @@
 import { ContactList } from "./ContactList";
 import { ContactForm } from "./ContactsForm";
 import { Filter } from "./Filter";
+// import { fetchContacts } from "redux";
 import Notiflix from "notiflix";
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from "react-redux";
-import { addContact, deleteContact, filterChange } from "redux/actions";
+import { addContact } from "redux/slices/contactSlice";
+import { deleteContact } from "redux/slices/contactSlice";
+import { filterChange } from "redux/slices/filterSlice";
 import { getContacts, getFilter } from "redux/selectors";
+// import { useEffect } from "react";
+
 
 export default function App() {
   const filter = useSelector(getFilter)
   const contacts = useSelector(getContacts)
+
   const dispatch = useDispatch()
+
+  // useEffect(()=> {
+  //   dispatch(fetchContacts())
+  // }, [dispatch])
+
 
   const handleSubmit = (ev) => {
     ev.preventDefault();
@@ -18,15 +29,11 @@ export default function App() {
     const name = form.elements.name.value
     const number = form.elements.number.value
 
-    if (contacts.some((contact)=> contact.name.toLowerCase() === name.toLowerCase())) {
+    if (contacts?.some((contact)=> contact.name.toLowerCase() === name.toLowerCase())) {
       return Notiflix.Notify.failure(`${name} is already in the books!`)
     }
 
-    dispatch(addContact({
-      id: crypto.randomUUID(),
-      name,
-      number
-    }))
+    dispatch(addContact(name, number))
 
     form.reset()
   }
@@ -34,10 +41,12 @@ export default function App() {
 
   const handleFilterChange = e => {
     dispatch(filterChange(e.target.value))
+    // console.log(e.target.value)
   }
 
-  const handleDelete = (ev) => {
-    dispatch(deleteContact(ev.target.id))
+  const handleDelete = e => {
+    dispatch(deleteContact(e.target.id))
+    // console.log(e.target.id)
   }
 
   return (
@@ -51,6 +60,9 @@ export default function App() {
         color: '#010101'
       }}
     >
+      {/* {getIsLoading && <p>Loading contacts...</p>}
+      {getError && <p>{getError}</p> }
+      {<p>{contacts?.length > 0 && JSON.stringify(contacts, null, 2)}</p>} */}
       <h1>Phonebook</h1>
       <ContactForm onSubmit={handleSubmit}/>
       <h2>Contacts</h2>
