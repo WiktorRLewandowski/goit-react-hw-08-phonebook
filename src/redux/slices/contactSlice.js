@@ -36,7 +36,7 @@ export const contactSlice = createSlice({
             state.contacts.push(action.payload)
         },
         [deleteContact.fulfilled] (state, action) {
-            state.isLoading = true;
+            state.isLoading = false;
             state.error = null;
             const index = state.contacts.findIndex(
                 contact => contact.id === action.payload.id
