@@ -1,5 +1,5 @@
-@import-normalize; /* bring in normalize.css styles */  
-/* not sure if it works, no traces of normalization in dev tool */
+/* @import-normalize; bring in normalize.css styles   */
+/* not sure if it works, no traces of normalization in dev tools */
 
 *,
 *::after,
