@@ -1,18 +1,21 @@
 import css from './ContactList.module.css'
 import PropTypes from 'prop-types'
+import { FaUser, FaPhone } from 'react-icons/fa'
 
 export const ContactList = ({contacts, filter, handleDelete}) => {
   if (contacts) {
   return (
     <ul className={css.list}>
-      {contacts.map(({id, name, number}) => { 
+      {contacts.map(({id, name, number, phone }) => { 
         return(
           name.toLowerCase().includes(filter.toLowerCase()) 
           ? <li key={id} className={css.item}>
-              {name}: {number}
+              <p className={css.name}><FaUser className={css.user}/>{name}:</p> 
+              <p className={css.number}><FaPhone className={css.phone}/>{number || phone}</p>
               <button id={id} className={css.btn} onClick={handleDelete}>
                 Delete contact
               </button>
+              <hr className={css.line}/>
             </li>
           : ''
       )}

@@ -1,26 +1,37 @@
+import Notiflix from "notiflix";
+import PropTypes from 'prop-types'
+
 import { ContactList } from "./ContactList";
 import { ContactForm } from "./ContactsForm";
 import { Filter } from "./Filter";
-// import { fetchContacts } from "redux";
-import Notiflix from "notiflix";
-import PropTypes from 'prop-types'
+
+import { fetchContacts } from "redux/operations";
+
 import { useDispatch, useSelector } from "react-redux";
-import { addContact } from "redux/slices/contactSlice";
-import { deleteContact } from "redux/slices/contactSlice";
+
+// import { addContact, deleteContact } from "redux/slices/contactSlice";
+import { addContact, deleteContact } from "redux/operations";
 import { filterChange } from "redux/slices/filterSlice";
-import { getContacts, getFilter } from "redux/selectors";
-// import { useEffect } from "react";
+import { 
+  selectContacts, 
+  selectFilter, 
+  selectIsLoading, 
+  selectError 
+    } from "redux/selectors";
+import { useEffect } from "react";
 
 
 export default function App() {
-  const filter = useSelector(getFilter)
-  const contacts = useSelector(getContacts)
+  const filter = useSelector(selectFilter)
+  const contacts = useSelector(selectContacts)
+  const error = useSelector(selectError)
+  const isLoading = useSelector(selectIsLoading)
 
   const dispatch = useDispatch()
 
-  // useEffect(()=> {
-  //   dispatch(fetchContacts())
-  // }, [dispatch])
+  useEffect(()=> {
+    dispatch(fetchContacts())
+  }, [dispatch])
 
 
   const handleSubmit = (ev) => {
@@ -33,7 +44,7 @@ export default function App() {
       return Notiflix.Notify.failure(`${name} is already in the books!`)
     }
 
-    dispatch(addContact(name, number))
+    dispatch(addContact({name, number}))
 
     form.reset()
   }
@@ -41,12 +52,10 @@ export default function App() {
 
   const handleFilterChange = e => {
     dispatch(filterChange(e.target.value))
-    // console.log(e.target.value)
   }
 
   const handleDelete = e => {
     dispatch(deleteContact(e.target.id))
-    // console.log(e.target.id)
   }
 
   return (
@@ -56,16 +65,15 @@ export default function App() {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        fontSize: '2rem',
+        fontSize: '1.5rem',
         color: '#010101'
       }}
     >
-      {/* {getIsLoading && <p>Loading contacts...</p>}
-      {getError && <p>{getError}</p> }
-      {<p>{contacts?.length > 0 && JSON.stringify(contacts, null, 2)}</p>} */}
-      <h1>Phonebook</h1>
+      { isLoading && <p>Loading contacts...</p>}
+      { error && <p> {error} </p> }
+      <h2><span style={{color: 'indigo'}}>Phone</span>book</h2>
       <ContactForm onSubmit={handleSubmit}/>
-      <h2>Contacts</h2>
+      <h3>Contacts</h3>
       <Filter filter={filter} onChange={handleFilterChange}/>
       <ContactList contacts={contacts} filter={filter} handleDelete={handleDelete}/>
     </div>
