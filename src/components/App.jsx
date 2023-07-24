@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { ContactList } from "./ContactList";
 import { ContactForm } from "./ContactsForm";
 import { Filter } from "./Filter";
+import { Loader } from "./Loader"
 
 import { fetchContacts } from "redux/operations";
 
@@ -69,13 +70,13 @@ export default function App() {
         color: '#010101'
       }}
     >
-      { isLoading && <p>Loading contacts...</p>}
+      {/* { isLoading && <p>Loading contacts...</p>} */}
       { error && <p> {error} </p> }
       <h2><span style={{color: 'indigo'}}>Phone</span>book</h2>
       <ContactForm onSubmit={handleSubmit}/>
       <h3>Contacts</h3>
       <Filter filter={filter} onChange={handleFilterChange}/>
-      <ContactList contacts={contacts} filter={filter} handleDelete={handleDelete}/>
+      {!isLoading ? <ContactList contacts={contacts} filter={filter} handleDelete={handleDelete}/> : <Loader/>}
     </div>
     )
 }
