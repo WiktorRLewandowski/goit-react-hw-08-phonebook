@@ -1,84 +1,100 @@
-import Notiflix from "notiflix";
 import PropTypes from 'prop-types'
 
-import { ContactList } from "./ContactList";
-import { ContactForm } from "./ContactsForm";
-import { Filter } from "./Filter";
-import { Loader } from "./Loader"
+// import { ContactList } from "./ContactList";
+// import { ContactForm } from "./ContactsForm";
+// import { Filter } from "./Filter";
+// import { Loader } from "./Loader"
 
 import { fetchContacts } from "redux/operations";
+// import {  
+//   selectIsLoading, 
+//   selectError 
+//   } from "redux/selectors";
 
-import { useDispatch, useSelector } from "react-redux";
-
-// import { addContact, deleteContact } from "redux/slices/contactSlice";
-import { addContact, deleteContact } from "redux/operations";
-import { filterChange } from "redux/slices/filterSlice";
 import { 
-  selectContacts, 
-  selectFilter, 
-  selectIsLoading, 
-  selectError 
-    } from "redux/selectors";
-import { useEffect } from "react";
+  useDispatch, 
+  // useSelector 
+  } from "react-redux";
+import {  lazy, useEffect } from "react";
+import { Route, Routes } from 'react-router-dom';
+// import { UserMenu } from './UserMenu';
+import Navigation from './Navigation/Navigation'
+
+import { RestrictedRoute } from './RestrictedRoute';
+import { PrivateRoute } from './PrivateRoute';
+import { useAuth } from 'hooks';
+import { refreshUser } from 'redux/auth/operations';
+import { Loader } from './Loader';
+
+// import { Home, Register } from 'pages';
+// import { Login } from 'pages';
+// import { Contacts } from 'pages/Contacts';
+
+const HomePage = lazy(()=> import('../pages/Home'))
+const LoginPage = lazy(()=> import('../pages/Login'))
+const RegisterPage = lazy(()=> import('../pages/Register'))
+const ContactsPage = lazy(()=> import('../pages/Contacts'))
 
 
 export default function App() {
-  const filter = useSelector(selectFilter)
-  const contacts = useSelector(selectContacts)
-  const error = useSelector(selectError)
-  const isLoading = useSelector(selectIsLoading)
-
+  // const error = useSelector(selectError)
+  // const isLoading = useSelector(selectIsLoading)
   const dispatch = useDispatch()
+  const { isRefreshing } = useAuth()
 
   useEffect(()=> {
-    dispatch(fetchContacts())
+    dispatch(refreshUser());
+    dispatch(fetchContacts());
   }, [dispatch])
 
+  return isRefreshing ? (<Loader/>) : (
+    <>
+        <Routes>
+          <Route path='/' element={<Navigation/>}>
+            <Route index element={<HomePage/>} />
+            <Route 
+              path='/login' 
+              element={
+                <RestrictedRoute redirectTo='/contacts' component = {<LoginPage/>} />
+              } />
+            <Route
+               path='/register' 
+               element={
+                 <RestrictedRoute redirectTo='/contacts' component = {<RegisterPage/>}/>
+               } />
+            <Route 
+              path='/contacts' 
+              element={
+                <PrivateRoute redirectTo='/login' component = {<ContactsPage/>} /> 
+              }/>
+          </Route>
+        </Routes>
+    </>
 
-  const handleSubmit = (ev) => {
-    ev.preventDefault();
-    const form = ev.target
-    const name = form.elements.name.value
-    const number = form.elements.number.value
 
-    if (contacts?.some((contact)=> contact.name.toLowerCase() === name.toLowerCase())) {
-      return Notiflix.Notify.failure(`${name} is already in the books!`)
-    }
-
-    dispatch(addContact({name, number}))
-
-    form.reset()
-  }
-
-
-  const handleFilterChange = e => {
-    dispatch(filterChange(e.target.value))
-  }
-
-  const handleDelete = e => {
-    dispatch(deleteContact(e.target.id))
-  }
-
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        fontSize: '1.5rem',
-        color: '#010101'
-      }}
-    >
-      {/* { isLoading && <p>Loading contacts...</p>} */}
-      { error && <p> {error} </p> }
-      <h2><span style={{color: 'indigo'}}>Phone</span>book</h2>
-      <ContactForm onSubmit={handleSubmit}/>
-      <h3>Contacts</h3>
-      <Filter filter={filter} onChange={handleFilterChange}/>
-      {!isLoading ? <ContactList contacts={contacts} filter={filter} handleDelete={handleDelete}/> : <Loader/>}
-    </div>
-    )
+    // <div
+    //   style={{
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     alignItems: 'center',
+    //     flexDirection: 'column',
+    //     fontSize: '1.5rem',
+    //     color: '#010101'
+    //   }}
+    // >
+    // <Helmet>
+    //   <title>Phonebook app</title>
+    // </Helmet>
+    //   {error && <p> {error} </p> }
+    //   <h2><span style={{color: 'indigo'}}>Phone</span>book</h2>
+    //   <ContactForm/>
+    //   <h3>Contacts</h3>
+    //   <Filter/>
+    //   {!isLoading 
+    //     ? <ContactList/> 
+    //     : <Loader/>}
+    // </div>
+  )
 }
 
 App.propTypes = {

@@ -1,0 +1,28 @@
+.list {
+    list-style-type: none;
+    display: flex;
+    gap: 1rem;
+
+    color: white;
+}
+
+.list a {
+    color:inherit;
+    text-decoration: none;
+    text-transform: capitalize;
+    &:hover {
+        text-decoration: underline;
+    }
+    
+}
+
+.button {
+    border: none;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    transition: transform 250ms ease-in;
+    &:hover {
+        transform: scale(1.1);
+    }
+}
