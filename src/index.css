@@ -50,14 +50,13 @@ h1 {
 .login {
   color: #1976d2;
   text-decoration: none;
+  transition: text-decoration 250ms ease-in;
   &:hover {
     text-decoration: underline;
   }
 }
 
-a:hover
-
 .image {
   display: block;
-  width: 100%; 
+  width: 75%; 
 }
