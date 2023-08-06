@@ -10,11 +10,7 @@ import css from './UserMenu.module.css'
 
 export const UserMenu = () => {
     const dispatch = useDispatch();
-    // const { user } = useAuth()
     const { isLogged } = useAuth()
-
-    // console.log(user)
-    
 
     const handleLogout = () => {
         dispatch(logout())
@@ -28,7 +24,6 @@ export const UserMenu = () => {
                 {isLogged && <li className={css.item}><NavLink to='/contacts'>contacts</NavLink></li>}
                 {isLogged 
                 ? (<>
-                        {/* <li className={css.item}>Hello {user?.email}</li> */}
                         <li className={css.item}><button className={css.button} onClick={handleLogout} type='button'><LogoutIcon/></button></li>
                     </>
                 )
@@ -42,9 +37,6 @@ export const UserMenu = () => {
                 }
             </ul>  
         </nav>
-        {/* <Suspense fallback={<Loader/>}>
-            <Outlet/>
-        </Suspense> */}
         </>
     )
 }

@@ -4,7 +4,7 @@ import css from './Loader.module.css'
 export const Loader = () => {
     return (
         <div className={css.wrapper}>
-            <ThreeCircles className={css.loader} color="indigo"/>
+            <ThreeCircles className={css.loader} color="#1976d2"/>
         </div>
     )
 }
