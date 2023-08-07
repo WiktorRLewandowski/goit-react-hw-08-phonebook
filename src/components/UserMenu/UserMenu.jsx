@@ -23,11 +23,7 @@ export const UserMenu = () => {
                 <li className={css.item}><NavLink to="/">home</NavLink></li>
                 {isLogged && <li className={css.item}><NavLink to='/contacts'>contacts</NavLink></li>}
                 {isLogged 
-                ? (<>
-                        <li className={css.item}><button className={css.button} onClick={handleLogout} type='button'><LogoutIcon/></button></li>
-                    </>
-                )
-
+                ? <li className={css.item}><button className={css.button} onClick={handleLogout} type='button'><LogoutIcon/></button></li>
                 : (
                     <ul className={css.list}>
                         <li className={css.item}><NavLink to="/register">register</NavLink></li>

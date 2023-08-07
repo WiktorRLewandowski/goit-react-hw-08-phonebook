@@ -23,6 +23,7 @@ export const register = createAsyncThunk(
             setAuthHeader(res.data.token)
             return res.data
         } catch(error) {
+            Notify.failure("Something went wrong... Couldn't register user.")
             return thunkAPI.rejectWithValue(error.message)
         }
     }
@@ -52,6 +53,7 @@ export const logout = createAsyncThunk(
             await axios.post('/users/logout')
             clearAuthHeader()
         } catch(error) {
+            Notify.failure(error.message)
             return thunkAPI.rejectWithValue(error.message)
         }
     }
@@ -67,6 +69,7 @@ export const refreshUser = createAsyncThunk(
         const persistedToken = state.auth.token
 
         if (persistedToken === null) {
+            Notify.failure("Unable to fetch user")
             return thunkAPI.rejectWithValue('Unable to fetch user')
         }
 
@@ -75,6 +78,7 @@ export const refreshUser = createAsyncThunk(
             const res = await axios.get('users/current')
             return res.data
         } catch(error) {
+            Notify.failure(error.message)
             return thunkAPI.rejectWithValue(error.message)
         }
     }

@@ -13,7 +13,7 @@ const Home = () => {
                 </title>
             </Helmet>
             <div className="main">
-            {!isLogged && <h1>Hello kind stranger, would you like to <Link className="login">register</Link>? <Link className='login' path='/login'>Login</Link>...?</h1>}
+            {!isLogged && <h1>Hello kind stranger, would you like to <Link className="login" to='/register'>register</Link>? <Link className='login' to='/login'>Login</Link>...?</h1>}
             <img className="image" src={jesusDesu} alt="Yeah, that's it."/>
             </div>
         </>

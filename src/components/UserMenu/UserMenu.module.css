@@ -1,6 +1,7 @@
 .list {
     list-style-type: none;
     display: flex;
+    align-items: center;
     gap: 1rem;
 
     color: white;
@@ -17,6 +18,9 @@
 }
 
 .button {
+    display: flex;
+    align-items: flex-end;
+
     border: none;
     background-color: transparent;
     color: white;
